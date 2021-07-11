@@ -10,12 +10,18 @@ public class TetrisBlock : MonoBehaviour
     public static int height = 20;
     public static int width = 10;
     private static Transform[,] grid = new Transform[width, height];
+    public GameObject[] Squares;
+    public Sprite[] Sprites;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        for(int i = 0; i < Squares.Length; i++)
+        {
+            int j = Random.Range(0, 2);
+            Squares[i].GetComponent<SpriteRenderer>().sprite = Sprites[j];
+        }
     }
 
     // Update is called once per frame
@@ -50,6 +56,11 @@ public class TetrisBlock : MonoBehaviour
         if(Time.time -previousTime>(Input.GetKey(KeyCode.DownArrow) ? fallTime/10 : fallTime))
         {
             transform.position += new Vector3(0, -1, 0);
+            if(CheckCombine())
+            {
+                return;
+            }
+
             if (!ValidMove())
             {
                 transform.position -= new Vector3(0, -1, 0);
@@ -103,6 +114,55 @@ public class TetrisBlock : MonoBehaviour
         return true;
     }
 
+    bool CheckCombine()
+    {
+        int sum = 0;
+
+        foreach (Transform children in transform)
+        {
+            int j = Mathf.RoundToInt(children.transform.position.x);
+            int i = Mathf.RoundToInt(children.transform.position.y);
+            if(i>0 && j>0 && grid[j, i] != null)
+                if (grid[j, i].GetComponentInParent<SpriteRenderer>().sprite == children.GetComponentInParent<SpriteRenderer>().sprite)
+                {
+                    Destroy(children.gameObject);
+                    int l = int.Parse(grid[j, i].GetComponentInParent<SpriteRenderer>().sprite.name)*2;
+                    int o = 0;
+                    //ぃ笵或本赣计Sprite...ノ程猜よ猭...
+                    if (l == 2)
+                        o = 0;
+                    else if (l == 4)
+                        o = 1;
+                    else if (l == 8)
+                        o = 2;
+                    else if (l == 16)
+                        o = 3;
+                    else if (l == 32)
+                        o = 4;
+                    else if (l == 64)
+                        o = 5;
+                    else if (l == 128)
+                        o = 6;
+                    else if (l == 256)
+                        o = 7;
+                    else if (l == 512)
+                        o = 8;
+                    else if (l == 1024)
+                        o = 9;
+                    else if (l == 2048)
+                        o = 10;
+
+                    grid[j, i].GetComponentInParent<SpriteRenderer>().sprite = grid[j, i].GetComponentInParent<TetrisBlock>().Sprites[o];
+                    sum++;
+                }
+        }
+
+        if (sum > 0)
+            return true;
+
+        else
+            return false;
+    }
 
     void DeleteLine(int i)
     {

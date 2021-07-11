@@ -213,6 +213,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationPoint: {x: 0.5, y: -0.5, z: 0}
   fallTime: 0.8
+  Squares:
+  - {fileID: 7628902718197773590}
+  - {fileID: 8591577776964080122}
+  - {fileID: 754597670898206949}
+  - {fileID: 498468472476049177}
+  Sprites:
+  - {fileID: 21300000, guid: 675e2bd29c02cfc4380da9383f1b7b47, type: 3}
+  - {fileID: 21300000, guid: 441cdcc6dae0ebe479328ab1c32acc5c, type: 3}
+  - {fileID: 21300000, guid: 0042ae42f286c8b4181244c096b7aeab, type: 3}
+  - {fileID: 21300000, guid: e0e39050cf8874249a1a722ad096f7f7, type: 3}
+  - {fileID: 21300000, guid: b5a6889fcfd850b4b9bfdc4f5a24638e, type: 3}
+  - {fileID: 21300000, guid: 271545ee11612e64cb7c943d09a2ed9b, type: 3}
+  - {fileID: 21300000, guid: 675b7b80bb43eb74f9ebe97490c0946f, type: 3}
+  - {fileID: 21300000, guid: 8eaf655c78a07e54eaa82cecdc3bcc94, type: 3}
+  - {fileID: 21300000, guid: 0f845beddb04bba4787ab031bf99f567, type: 3}
+  - {fileID: 21300000, guid: 7ce73bd7d046fc04485edcb3bdd3e562, type: 3}
+  - {fileID: 21300000, guid: 68a3a9cbeb99a88469b262c053338587, type: 3}
 --- !u!1 &7628902718197773590
 GameObject:
   m_ObjectHideFlags: 0
