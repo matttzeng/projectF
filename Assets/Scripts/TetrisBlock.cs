@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class TetrisBlock : MonoBehaviour
 {
@@ -17,11 +18,13 @@ public class TetrisBlock : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        /*
         for(int i = 0; i < Squares.Length; i++)
         {
             int j = Random.Range(0, 2);
             Squares[i].GetComponent<SpriteRenderer>().sprite = Sprites[j];
         }
+        */
     }
 
     // Update is called once per frame
@@ -45,8 +48,14 @@ public class TetrisBlock : MonoBehaviour
         {
             //rotate
             transform.RotateAround(transform.TransformPoint(rotationPoint), new Vector3(0,0,1), 90);
+            RotateText(-90);
             if (!ValidMove())
+            {
                 transform.RotateAround(transform.TransformPoint(rotationPoint), new Vector3(0, 0, 1), -90);
+                RotateText(90);
+            }
+                
+
         }
 
 
@@ -56,16 +65,20 @@ public class TetrisBlock : MonoBehaviour
         if(Time.time -previousTime>(Input.GetKey(KeyCode.DownArrow) ? fallTime/10 : fallTime))
         {
             transform.position += new Vector3(0, -1, 0);
+           /*
             if(CheckCombine())
             {
                 return;
             }
-
+           */
             if (!ValidMove())
             {
                 transform.position -= new Vector3(0, -1, 0);
                 AddToGrid();
-                CheckForLines();
+                //CheckForLines();
+
+                CheckCombine();
+                
 
                 this.enabled = false;
                 FindObjectOfType<SpawnTetrominoes>().NewTetromino();
@@ -113,7 +126,170 @@ public class TetrisBlock : MonoBehaviour
         }
         return true;
     }
+    void DeleteLine(int i)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            Destroy(grid[j, i].gameObject);
+            grid[j, i] = null;
+        }
+    }
 
+    void RowDown(int i)
+    {
+        for (int y = i; y < height; y++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                if (grid[j, y] != null)
+                {
+                    grid[j, y - 1] = grid[j, y];
+                    grid[j, y] = null;
+                    grid[j, y - 1].transform.position -= new Vector3(0, 1, 0);
+                }
+            }
+        }
+    }
+
+    void CheckCombine()
+    {
+        
+
+
+        for (int j = width -1;j>=0; j--)
+        {
+            for (int i = height - 1; i >= 0; i--)
+            {
+                if (HasCombine(j, i))
+                {
+                    Debug.Log("hasCombine" + j + "  " + i);
+                    DeleteBlock(j, i);
+                    BlockDown(j, i);
+
+                    continue;
+
+                }
+            }
+        }
+
+       
+     
+    }
+    bool HasCombine(int j, int i)
+    {
+        Debug.Log("HasCombine");
+       
+                if (grid[j, i] != null && grid[j,i+1]) {
+                    Debug.Log(grid[j,i].name);
+                    Debug.Log(grid[j, i].GetComponentInChildren<TMP_Text>().text);
+                    if (grid[j, i]. GetComponentInChildren<TMP_Text>().text == grid[j, i + 1].GetComponentInChildren<TMP_Text>().text)
+                    {
+
+                        return true;
+                       
+                    }
+                    
+                }
+
+               
+
+      
+
+        return false;
+    }
+    void DeleteBlock(int j,int i)
+    {
+        Debug.Log("DeleteBlock  " + j + " " + i);
+        Destroy(grid[j, i] .gameObject);
+            grid[j, i] = null;
+       
+    }
+
+    void BlockDown(int j,int i)
+    {
+        Debug.Log("blockDown");
+                   
+        for(int k= i; k < height-1; k++)
+        {
+             if (grid[j, k+1] != null)
+             {
+                grid[j, k] = grid[j, k + 1];             
+                grid[j, k + 1] = null;
+                grid[j, k ].transform.position -= new Vector3(0, 1, 0);
+
+                CombineNum(j, i);
+            }
+          
+        }
+                   
+       
+    }
+    void CombineNum(int j, int i)
+    {
+        grid[j, i].GetComponentInChildren<TMP_Text>().text = (int.Parse(grid[j, i].GetComponentInChildren<TMP_Text>().text)*2).ToString();
+        ChangeColor();
+
+    }
+   void RotateText(int rotateAngle)
+    {
+        foreach (Transform children in transform)
+        {
+            children.GetComponentInChildren<TMP_Text>().transform.eulerAngles += new Vector3(0, 0, rotateAngle);
+        }
+           
+    }
+
+    public void ChangeColor()
+    {
+        foreach (Transform children in transform)
+        {
+         
+            string numText = children.GetComponentInChildren<TMP_Text>().text;
+            switch (numText)
+            {
+                case "2":
+                    children.GetComponent<SpriteRenderer>().color = new Color(0.92f, 0.85f, 0.82f);
+                    break;
+                case "4":
+                    children.GetComponent<SpriteRenderer>().color = new Color(0.9f, 0.85f, 0.75f);
+                    break;
+                case "8":
+                    children.GetComponent<SpriteRenderer>().color = new Color(0.92f, 0.6f, 0.43f);
+                    break;
+                case "16":
+                    children.GetComponent<SpriteRenderer>().color = new Color(0.92f, 0.5f, 0.3f);
+                    break;
+                case "32":
+                    children.GetComponent<SpriteRenderer>().color = new Color(0.92f, 0.4f, 0.3f);
+                    break;
+                case "64":
+                    children.GetComponent<SpriteRenderer>().color = new Color(0.92f, 0.4f, 0.3f);
+                    break;
+                case "128":
+                    children.GetComponent<SpriteRenderer>().color = new Color(0.92f, 0.4f, 0.3f);
+                    break;
+                case "256":
+                    children.GetComponent<SpriteRenderer>().color = new Color(0.9f, 0.8f, 0.4f);
+                    break;
+                case "512":
+                    children.GetComponent<SpriteRenderer>().color = new Color(0.9f, 0.8f, 0.4f);
+                    break;
+                case "1024":
+                    children.GetComponent<SpriteRenderer>().color = new Color(0.9f, 0.75f, 0.2f);
+                    break;
+                case "2048":
+                    children.GetComponent<SpriteRenderer>().color = new Color(0.9f, 0.75f, 0.2f);
+                    break;
+
+                default:
+                    break;
+
+            }
+        }
+           
+    }
+
+    /*
     bool CheckCombine()
     {
         int sum = 0;
@@ -163,32 +339,8 @@ public class TetrisBlock : MonoBehaviour
         else
             return false;
     }
-
-    void DeleteLine(int i)
-    {
-        for(int j = 0;j<width;j++)
-        {
-            Destroy(grid[j, i].gameObject);
-            grid[j,i] = null;
-        }
-    }
-
-    void RowDown(int i)
-    {
-        for (int y = i; y < height; y++)
-        {
-            for(int j = 0; j < width; j++)
-            {
-                if(grid[j,y] != null)
-                {
-                    grid[j, y - 1] = grid[j, y];
-                    grid[j, y] = null;
-                    grid[j, y - 1].transform.position -= new Vector3(0, 1, 0);
-                }
-            }
-        }
-    }
-
+    */
+   
     bool ValidMove()
     {
         foreach (Transform children in transform)
