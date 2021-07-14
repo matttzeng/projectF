@@ -13,6 +13,14 @@ public class TetrisBlock : MonoBehaviour
     private static Transform[,] grid = new Transform[width, height];
     public GameObject[] Squares;
     public Sprite[] Sprites;
+    public bool canCombine = true;
+    int lowestBlockX = 100;
+    int lowestBlockY = 100;
+    public Transform lowestBlock;
+    int index1;
+    public Transform[] temp = new Transform[20];
+    int index;
+    
 
 
     // Start is called before the first frame update
@@ -73,11 +81,17 @@ public class TetrisBlock : MonoBehaviour
            */
             if (!ValidMove())
             {
+                while (CheckCombine2())
+                {
+                    transform.position += new Vector3(0, -1, 0);
+                }
+
                 transform.position -= new Vector3(0, -1, 0);
+
                 AddToGrid();
                 //CheckForLines();
 
-                CheckCombine();
+                //CheckCombine();
                 
 
                 this.enabled = false;
@@ -102,7 +116,6 @@ public class TetrisBlock : MonoBehaviour
 
         }
     }
-
 
     void CheckForLines()
     {
@@ -149,6 +162,87 @@ public class TetrisBlock : MonoBehaviour
                 }
             }
         }
+    }
+
+    bool CheckCombine2()
+    {
+        //bool canCombine = true;
+        
+
+
+        foreach (Transform children in transform)
+        {
+            int j = Mathf.RoundToInt(children.transform.position.x);
+            int i = Mathf.RoundToInt(children.transform.position.y);
+
+            if (lowestBlockY > i)
+            {
+                lowestBlockY = i;
+                lowestBlock = children;
+            }
+
+            //Debug.Log(children.GetComponent<TMP_Text>().text);
+
+            if (i >= 0)
+            {
+                if(grid[j, i] != null)
+                    if (grid[j, i].GetComponentInChildren<TMP_Text>().text != children.GetComponentInChildren<TMP_Text>().text)
+                    {
+                        canCombine = false;
+                    }
+                        
+            }
+            
+            else if (i < 0)
+                canCombine = false;
+        }
+
+        if (canCombine == true)
+        {
+            canCombine = false;
+
+            foreach (Transform children in transform)
+            {
+                int j = Mathf.RoundToInt(children.transform.position.x);
+                int i = Mathf.RoundToInt(children.transform.position.y);
+
+                if (grid[j,i] != null)
+                {
+                    //Debug.Log("block: " + children.GetComponentInChildren<TMP_Text>().text);
+                    //Debug.Log("grid: " + grid[j, i].GetComponentInChildren<TMP_Text>().text);
+
+                    if (grid[j, i].GetComponentInChildren<TMP_Text>().text == children.GetComponentInChildren<TMP_Text>().text)
+                    {
+                        DeleteBlock(j, i);
+                        children.GetComponentInChildren<TMP_Text>().text = (int.Parse(children.GetComponentInChildren<TMP_Text>().text) * 2).ToString();
+                        ChangeColor();
+                        if (grid[j,i-1] != null)
+                            canCombine = true;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        int k = Mathf.RoundToInt(lowestBlock.transform.position.x);
+        int l = Mathf.RoundToInt(lowestBlock.transform.position.y);
+
+        /*if(l >= 0)
+        {
+            //var clone = new GameObject().transform;
+            //clone = Instantiate(lowestBlock, transform.position, transform.rotation);
+
+            //var temp = new GameObject().transform;
+            Debug.Log("index: " + index);
+            temp[index] = Instantiate(lowestBlock, transform.position, transform.rotation);
+            
+            grid[k, l] = temp[index];
+            lowestBlock.gameObject.SetActive(false);
+            //index += 1;
+        }*/
+        
+        return false;
     }
 
     void CheckCombine()
