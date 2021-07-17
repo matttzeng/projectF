@@ -86,6 +86,8 @@ public class TetrisBlock : MonoBehaviour
                     transform.position += new Vector3(0, -1, 0);
                 }
 
+                
+
                 transform.position -= new Vector3(0, -1, 0);
 
                 AddToGrid();
@@ -206,6 +208,8 @@ public class TetrisBlock : MonoBehaviour
                 int j = Mathf.RoundToInt(children.transform.position.x);
                 int i = Mathf.RoundToInt(children.transform.position.y);
 
+                int times = 1;
+
                 if (grid[j,i] != null)
                 {
                     //Debug.Log("block: " + children.GetComponentInChildren<TMP_Text>().text);
@@ -214,12 +218,49 @@ public class TetrisBlock : MonoBehaviour
                     if (grid[j, i].GetComponentInChildren<TMP_Text>().text == children.GetComponentInChildren<TMP_Text>().text)
                     {
                         DeleteBlock(j, i);
-                        children.GetComponentInChildren<TMP_Text>().text = (int.Parse(children.GetComponentInChildren<TMP_Text>().text) * 2).ToString();
-                        ChangeColor();
+                        times *= 2;
+                        //children.GetComponentInChildren<TMP_Text>().text = (int.Parse(children.GetComponentInChildren<TMP_Text>().text) * 2).ToString();
+                        //ChangeColor();
                         if (grid[j,i-1] != null)
                             canCombine = true;
                     }
                 }
+
+                if (grid[j+1, i+1] != null)
+                {
+                    //Debug.Log("block: " + children.GetComponentInChildren<TMP_Text>().text);
+                    //Debug.Log("grid: " + grid[j, i].GetComponentInChildren<TMP_Text>().text);
+
+                    if (grid[j+1, i+1].GetComponentInChildren<TMP_Text>().text == children.GetComponentInChildren<TMP_Text>().text)
+                    {
+                        DeleteBlock(j+1, i+1);
+                        times *= 2;
+                        //children.GetComponentInChildren<TMP_Text>().text = (int.Parse(children.GetComponentInChildren<TMP_Text>().text) * 2).ToString();
+                        //ChangeColor();
+                        if (grid[j, i - 1] != null)
+                            canCombine = true;
+                    }
+                }
+
+                if (grid[j-1, i+1] != null)
+                {
+                    //Debug.Log("block: " + children.GetComponentInChildren<TMP_Text>().text);
+                    //Debug.Log("grid: " + grid[j, i].GetComponentInChildren<TMP_Text>().text);
+
+                    if (grid[j-1, i+1].GetComponentInChildren<TMP_Text>().text == children.GetComponentInChildren<TMP_Text>().text)
+                    {
+                        DeleteBlock(j-1, i+1);
+                        times *= 2;
+                        //children.GetComponentInChildren<TMP_Text>().text = (int.Parse(children.GetComponentInChildren<TMP_Text>().text) * 2).ToString();
+                        //ChangeColor();
+                        if (grid[j, i - 1] != null)
+                            canCombine = true;
+                    }
+                }
+
+                children.GetComponentInChildren<TMP_Text>().text = (int.Parse(children.GetComponentInChildren<TMP_Text>().text) * times).ToString();
+                ChangeColor();
+
             }
 
             return true;
