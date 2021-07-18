@@ -49,7 +49,7 @@ public class SpawnTetrominoes : MonoBehaviour
         int blockNum = newTetro.transform.childCount;
         
         
-        //把block存到list
+        //把block存��Eist
         List<GameObject> tetroBlock = new List<GameObject>();
         for (int i = 0; i < blockNum; i++)
         {
@@ -68,7 +68,7 @@ public class SpawnTetrominoes : MonoBehaviour
         {
             tetroBlock[j].GetComponentInChildren<TMP_Text>().text = (Random.Range(1, 3) * 2).ToString();
 
-            Debug.Log(tetroBlock[j].GetComponentInChildren<TMP_Text>().text);
+            //Debug.Log(tetroBlock[j].GetComponentInChildren<TMP_Text>().text);
         }
 
 

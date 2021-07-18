@@ -555,8 +555,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationPoint: {x: 0, y: -1, z: 0}
   fallTime: 0.8
-  Squares: []
+  Squares:
+  - {fileID: 8578321159077950894}
+  - {fileID: 8042686682418445832}
+  - {fileID: 2255413981330366911}
+  - {fileID: 1208653404810757019}
   Sprites: []
+  canCombine: 1
+  canControl: 1
+  lowestBlock: {fileID: 0}
+  Indication: {fileID: 0}
+  temp:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  moveDirection: {x: 0, y: -1, z: 0}
 --- !u!1 &5854569366967596079
 GameObject:
   m_ObjectHideFlags: 0
