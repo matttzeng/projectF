@@ -24,7 +24,7 @@ public class TetrisBlock : MonoBehaviour
     int index;
     public Vector3 moveDirection = new Vector3(0, -1, 0);
     public List<Transform> CheckA = new List<Transform>();
-
+    public bool checkA;
 
 
     // Start is called before the first frame update
@@ -99,12 +99,20 @@ public class TetrisBlock : MonoBehaviour
 
                 AddToGrid();
 
-                CheckCombine3();
+                for(int k = 0; k < 4; k++)
+                {
+                    CheckACombine();
+
+                    CheckBCombine();
+                    CheckA.Clear();
+                    AddToGrid();
+
+                }
 
                 //CheckForLines();
 
                 //CheckCombine();
-                
+
 
                 this.enabled = false;
                 FindObjectOfType<SpawnTetrominoes>().NewTetromino();
@@ -127,6 +135,9 @@ public class TetrisBlock : MonoBehaviour
             CheckA.Add(children);
 
             grid[roundedX, roundedY] = children;
+            
+            //if(grid[roundedX, roundedY] != null)
+            //CheckA.Add(grid[roundedX, roundedY]);
 
         }
     }
@@ -178,7 +189,74 @@ public class TetrisBlock : MonoBehaviour
         }
     }
 
-    void CheckCombine3()
+    void CheckBCombine()
+    {
+        for(int k = 0; k < CheckA.Count; k++)
+        {
+            int j = Mathf.RoundToInt(CheckA[k].position.x);
+            int i = Mathf.RoundToInt(CheckA[k].position.y);
+
+            bool checkB = true;
+
+            if (i <= 0)
+            {
+                checkB = false;
+                continue;
+            }
+
+            if (grid[j, i] == null)
+            {
+                continue;
+            }
+
+            
+
+            if (j - 1 >= 0 && i >= 0)
+                if (grid[j - 1, i] != null)
+                {
+                    checkB = false;
+                    continue;
+                }
+
+            if (j + 1 >= 0 && i >= 0)
+                if (grid[j + 1, i] != null)
+                {
+                    checkB = false;
+                    continue;
+                }
+
+            if (j >= 0 && i - 1 >= 0)
+                if (grid[j, i - 1] != null)
+                {
+                    checkB = false;
+                    continue;
+                }
+
+            if (j >= 0 && i + 1 >= 0)
+                if (grid[j, i + 1] != null)
+                {
+                    checkB = false;
+                    continue;
+                }
+            
+            //grid[j,i].gameObject.transform.position += new Vector3(0, -1, 0);
+            grid[j, i - 1] = CheckA[k];
+            CheckA[k].gameObject.transform.position += new Vector3(0, -1, 0);
+            grid[j, i] = null;
+            //DeleteBlock(j,i);
+            k--;
+
+
+
+
+        }
+
+
+
+    }
+
+
+    void CheckACombine()
     {
         int i = 100;
         int j = 100;
@@ -188,17 +266,21 @@ public class TetrisBlock : MonoBehaviour
         for (int k = 0; k < CheckA.Count; k++)
         {
             int times = 1;
-            if (CheckA[k].gameObject == null)
+
+            j = Mathf.RoundToInt(CheckA[k].position.x);
+            i = Mathf.RoundToInt(CheckA[k].position.y);
+
+            if (grid[j, i] == null)
             {
-                Debug.Log("Transform is null");
+                //Debug.Log("Transform is null");
                 continue;
             }
                 
 
-            if (CheckA[k] != null)
-            {
-                j = Mathf.RoundToInt(CheckA[k].position.x);
-                i = Mathf.RoundToInt(CheckA[k].position.y);
+            //if (CheckA[k] != null)
+            //{
+                //j = Mathf.RoundToInt(CheckA[k].position.x);
+                //i = Mathf.RoundToInt(CheckA[k].position.y);
 
                 if (j -1 >=0 && i >= 0)
                 if (grid[j - 1, i ] != null)
@@ -240,13 +322,18 @@ public class TetrisBlock : MonoBehaviour
                     }
                 }
 
+                if (times >1)
+            {
                 CheckA[k].GetComponentInChildren<TMP_Text>().text = (int.Parse(CheckA[k].GetComponentInChildren<TMP_Text>().text) * times).ToString();
                 ChangeColor();
+                checkA = true;
+            }
+                
                 //CheckA.Remove(CheckA[k]);
 
 
 
-            }
+            //}
 
         }
 
@@ -371,6 +458,7 @@ public class TetrisBlock : MonoBehaviour
                         times *= 2;
                         //children.GetComponentInChildren<TMP_Text>().text = (int.Parse(children.GetComponentInChildren<TMP_Text>().text) * 2).ToString();
                         //ChangeColor();
+                        if (i > 0)
                         if (grid[j,i-1] != null)
                             canCombine = true;
                     }
@@ -387,6 +475,7 @@ public class TetrisBlock : MonoBehaviour
                         times *= 2;
                         //children.GetComponentInChildren<TMP_Text>().text = (int.Parse(children.GetComponentInChildren<TMP_Text>().text) * 2).ToString();
                         //ChangeColor();
+                        if(i > 0)
                         if (grid[j, i - 1] != null)
                             canCombine = true;
                     }
@@ -403,7 +492,8 @@ public class TetrisBlock : MonoBehaviour
                         times *= 2;
                         //children.GetComponentInChildren<TMP_Text>().text = (int.Parse(children.GetComponentInChildren<TMP_Text>().text) * 2).ToString();
                         //ChangeColor();
-                        if (grid[j, i - 1] != null)
+                        if (i > 0)
+                            if (grid[j, i - 1] != null)
                             canCombine = true;
                     }
                 }
