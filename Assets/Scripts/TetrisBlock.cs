@@ -14,6 +14,7 @@ public class TetrisBlock : MonoBehaviour
     public GameObject[] Squares;
     public Sprite[] Sprites;
     public bool canCombine = true;
+    public bool canControl = true;
     int lowestBlockX = 100;
     int lowestBlockY = 100;
     public Transform lowestBlock;
@@ -40,19 +41,19 @@ public class TetrisBlock : MonoBehaviour
     {
        
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && canControl == true)
         {
             transform.position += new Vector3(-1, 0, 0);
             if (!ValidMove())
                 transform.position -= new Vector3(-1, 0, 0);
         }        
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && canControl == true)
         {
             transform.position += new Vector3(1, 0, 0);
             if (!ValidMove())
                 transform.position -= new Vector3(1, 0, 0);
         }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        else if (Input.GetKeyDown(KeyCode.UpArrow) && canControl == true)
         {
             //rotate
             transform.RotateAround(transform.TransformPoint(rotationPoint), new Vector3(0,0,1), 90);
@@ -81,12 +82,15 @@ public class TetrisBlock : MonoBehaviour
            */
             if (!ValidMove())
             {
+                canControl = false;
+
                 while (CheckCombine2())
                 {
-                    transform.position += new Vector3(0, -1, 0);
+                    //transform.position += new Vector3(0, -1, 0);
+                    previousTime = Time.time;
+                    return;
                 }
 
-                
 
                 transform.position -= new Vector3(0, -1, 0);
 
